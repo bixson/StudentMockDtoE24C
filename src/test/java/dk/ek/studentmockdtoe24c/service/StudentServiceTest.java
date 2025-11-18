@@ -68,9 +68,7 @@ class StudentServiceTest {
 
         //not found case (ID 2)
         when(studentRepository.findById(2L)).thenReturn(Optional.empty());
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            studentService.getStudentById(2L);
-        });
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {studentService.getStudentById(2L);});
         assertEquals("Student not found with id 2", exception.getMessage());
     }
 
