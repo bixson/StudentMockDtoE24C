@@ -56,7 +56,7 @@ class StudentServiceTest {
 
     @Test
     void getStudentById() {
-        //found case
+        //found case (ID 1)
         s1.setId(1L);
         when(studentRepository.findById(1L)).thenReturn(Optional.of(s1));
 
@@ -65,7 +65,8 @@ class StudentServiceTest {
         assertEquals(1L, studentResponse.getId());
         assertEquals("Johnny Doesit", studentResponse.getName());
 
-        //not found case
+
+        //not found case (ID 2)
         when(studentRepository.findById(2L)).thenReturn(Optional.empty());
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
             studentService.getStudentById(2L);
