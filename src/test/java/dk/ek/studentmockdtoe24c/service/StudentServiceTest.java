@@ -93,6 +93,22 @@ class StudentServiceTest {
 
     @Test
     void updateStudent() {
+        s1.setId(1L);
+        Student request = new Student("Johnny Updated", "NewPass123", LocalDate.of(2001, 1, 1), LocalTime.of(12, 0));
+
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(s1));
+        // return whats passed in to save
+        when(studentRepository.save(s1)).thenReturn(s1);
+
+        Student result = studentService.updateStudent(1L, request);
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("Johnny Updated", result.getName());
+        assertEquals("NewPass123", result.getPassword());
+        assertEquals(request.getBornDate(), result.getBornDate());
+        assertEquals(request.getBornTime(), result.getBornTime());
+        verify(studentRepository).findById(1L);
+        verify(studentRepository).save(s1);
     }
 
     @Test
