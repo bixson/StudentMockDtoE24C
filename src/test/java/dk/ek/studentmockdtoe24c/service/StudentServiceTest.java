@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class) // missing this to run mock on test class
@@ -74,6 +75,20 @@ class StudentServiceTest {
 
     @Test
     void createStudent() {
+        Student toSave = s1;
+        Student saved = new Student(s1.getName(), s1.getPassword(), s1.getBornDate(), s1.getBornTime());
+        saved.setId(1L);
+
+        when(studentRepository.save(toSave)).thenReturn(saved);
+
+        //act
+        Student result = studentService.createStudent(toSave);
+        //assert
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("Johnny Doesit", result.getName());
+        //verify
+        verify(studentRepository).save(toSave);
     }
 
     @Test
