@@ -113,5 +113,16 @@ class StudentServiceTest {
 
     @Test
     void deleteStudent() {
+        when(studentRepository.existsById(1L)).thenReturn(true);
+        studentService.deleteStudent(1L);
+        verify(studentRepository).existsById(1L);
+        verify(studentRepository).deleteById(1L);
+
+        //not found case
+        when(studentRepository.existsById(2L)).thenReturn(false);
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            studentService.deleteStudent(2L);
+    });
+        assertEquals("Student not found with id 2", exception.getMessage());
     }
 }
