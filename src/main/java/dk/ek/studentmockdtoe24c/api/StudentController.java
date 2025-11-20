@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 @RestController
 @RequestMapping("/api/students")
 public class StudentController {
+
     private final StudentService studentService;
 
     // Constructor injection
@@ -53,14 +54,14 @@ public class StudentController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-}
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
-//        try {
-//            studentService.deleteStudent(id);
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        } catch (RuntimeException e) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+        try {
+            studentService.deleteStudent(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+}

@@ -60,8 +60,8 @@ public class StudentService {
         studentToUpdate.setBornDate(updateInfo.getBornDate());
         studentToUpdate.setBornTime(updateInfo.getBornTime());
 
-        Student studentRepsonse = studentRepository.save(studentToUpdate);
-        return StudentMapper.toStudentRequestDTO(studentRepsonse);
+        Student studentResponse = studentRepository.save(studentToUpdate);
+        return StudentMapper.toStudentRequestDTO(studentResponse);
     }
 
     public void deleteStudent(Long id) {
