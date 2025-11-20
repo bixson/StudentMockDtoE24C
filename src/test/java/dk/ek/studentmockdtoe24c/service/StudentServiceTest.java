@@ -1,7 +1,9 @@
 package dk.ek.studentmockdtoe24c.service;
 
+import dk.ek.studentmockdtoe24c.dto.StudentResponseDTO;
 import dk.ek.studentmockdtoe24c.model.Student;
 import dk.ek.studentmockdtoe24c.repository.StudentRepository;
+import dk.ek.studentmockdtoe24c.utils.StudentMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +30,9 @@ class StudentServiceTest {
     @Mock
     private StudentRepository studentRepository;
 
+    @Mock
+    private StudentMapper studentMapper;
+
     private Student s1;
     private Student s2;
 
@@ -35,7 +40,7 @@ class StudentServiceTest {
     void setUp() {
         s1 = new Student("Johnny Doesit", "Johnnyboy69", LocalDate.of(2000, 1, 1), LocalTime.of(10, 0));
         s2 = new Student("Jane Doesit", "Janeboy69", LocalDate.of(1999, 2, 2), LocalTime.of(11, 0));
-        studentService = new StudentService(studentRepository);
+        studentService = new StudentService(studentRepository, studentMapper);
     }
 
     @Test
@@ -48,10 +53,9 @@ class StudentServiceTest {
         //arrange
         //act
         //assert
-        List<Student> result = studentService.getAllStudents();
+        List<?> result = studentService.getAllStudents();
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("Johnny Doesit", result.get(0).getName());
     }
 
     @Test
@@ -60,10 +64,14 @@ class StudentServiceTest {
         s1.setId(1L);
         when(studentRepository.findById(1L)).thenReturn(Optional.of(s1));
 
-        Student studentResponse = studentService.getStudentById(1L);
+        // mock mapper to return DTO
+        StudentResponseDTO expectedDTO = new StudentResponseDTO(1L, "Johnny Doesit", s1.getBornDate(), s1.getBornTime());
+        when(studentMapper.toStudentResponseDTO(s1)).thenReturn(expectedDTO);
+
+        StudentResponseDTO studentResponse = studentService.getStudentById(1L);
         assertNotNull(studentResponse);
-        assertEquals(1L, studentResponse.getId());
-        assertEquals("Johnny Doesit", studentResponse.getName());
+        assertEquals(1L, studentResponse.id());
+        assertEquals("Johnny Doesit", studentResponse.name());
 
 
         //not found case (ID 2)

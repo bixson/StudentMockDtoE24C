@@ -1,5 +1,6 @@
 package dk.ek.studentmockdtoe24c.api;
 
+import dk.ek.studentmockdtoe24c.dto.StudentResponseDTO;
 import dk.ek.studentmockdtoe24c.model.Student;
 import dk.ek.studentmockdtoe24c.service.StudentService;
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 @RestController
 @RequestMapping("/api/students")
@@ -18,20 +20,22 @@ public class StudentController {
         this.studentService = studentService;
     }
 
+    // Get all students with OK status
     @GetMapping
-    public List<Student> getAllStudents() {
-        return studentService.getAllStudents();
+    public ResponseEntity<List<StudentResponseDTO>> getAllStudents() {
+        return ResponseEntity.ok(studentService.getAllStudents());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
+    public ResponseEntity<StudentResponseDTO> getStudentById(@PathVariable Long id) {
         try {
-            Student student = studentService.getStudentById(id);
-            return new ResponseEntity<>(student, HttpStatus.OK);
+            StudentResponseDTO studentResponseDTO = studentService.getStudentById(id);
+            return new ResponseEntity<>(studentResponseDTO, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
 
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody Student studentRequest) {

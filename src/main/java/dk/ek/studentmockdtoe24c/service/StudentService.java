@@ -1,7 +1,9 @@
 package dk.ek.studentmockdtoe24c.service;
 
+import dk.ek.studentmockdtoe24c.dto.StudentResponseDTO;
 import dk.ek.studentmockdtoe24c.model.Student;
 import dk.ek.studentmockdtoe24c.repository.StudentRepository;
+import dk.ek.studentmockdtoe24c.utils.StudentMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,37 +14,43 @@ import java.util.Optional;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final StudentMapper StudentMapper;
+
+
 
     // Constructor injection
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, StudentMapper studentMapper) {
         this.studentRepository = studentRepository;
+        StudentMapper = studentMapper;
     }
 
-    public List<Student> getAllStudents() {
+    public List<StudentResponseDTO> getAllStudents() {
         List<Student> students = studentRepository.findAll();
-        List<Student> studentResponses = new ArrayList<>();
 
-        // Using a for-loop to convert each Student to a StudentResponseDTO
-        for (Student student : students) {
-            studentResponses.add(student);
-        }
-
-        return studentResponses;
+        List<StudentResponseDTO> studentResponseDTO = students.stream().map(StudentMapper::toStudentResponseDTO)
+                .toList();
+        return studentResponseDTO;
     }
 
-    public Student getStudentById(Long id) {
-        Optional<Student> optionalStudent = studentRepository.findById(id);
-
-        // Throw RuntimeException if student is not found
-        if (optionalStudent.isEmpty()) {
-            throw new RuntimeException("Student not found with id " + id);
-        }
-
-        Student studentResponse = optionalStudent.get();
-
-        return studentResponse;
-
+    public StudentResponseDTO getStudentById(Long id) {
+    return studentRepository.findById(id)
+            .map(StudentMapper::toStudentResponseDTO)
+            .orElseThrow(() -> new RuntimeException("Student not found with id " + id));
     }
+
+//    public Student getStudentById(Long id) {
+//
+//        Optional<Student> optionalStudent = studentRepository.findById(id);
+//
+//        // Throw RuntimeException if student is not found
+//        if (optionalStudent.isEmpty()) {
+//            throw new RuntimeException("Student not found with id " + id);
+//        }
+//
+//        Student studentResponse = optionalStudent.get();
+//
+//        return studentResponse;
+//    }
 
     public Student createStudent(Student studentRequest) {
         Student studentResponse = studentRepository.save(studentRequest);
