@@ -45,22 +45,23 @@ public class StudentService {
         return StudentMapper.toStudentRequestDTO(savedStudent);
     }
 
-    public Student updateStudent(Long id, Student studentRequest) {
+    public StudentRequestDTO updateStudent(Long id, StudentRequestDTO studentRequest) {
         Optional<Student> optionalStudent = studentRepository.findById(id);
         // Throw RuntimeException if student is not found
         if (optionalStudent.isEmpty()) {
             throw new RuntimeException("Student not found with id " + id);
         }
 
-        Student student = optionalStudent.get();
+        Student studentToUpdate = optionalStudent.get();
 
-        student.setName(studentRequest.getName());
-        student.setPassword(studentRequest.getPassword());
-        student.setBornDate(studentRequest.getBornDate());
-        student.setBornTime(studentRequest.getBornTime());
+        Student updateInfo = StudentMapper.toStudent(studentRequest);
+        studentToUpdate.setName(updateInfo.getName());
+        studentToUpdate.setPassword(updateInfo.getPassword());
+        studentToUpdate.setBornDate(updateInfo.getBornDate());
+        studentToUpdate.setBornTime(updateInfo.getBornTime());
 
-        Student studentResponse = studentRepository.save(student);
-        return studentResponse;
+        Student studentRepsonse = studentRepository.save(studentToUpdate);
+        return StudentMapper.toStudentRequestDTO(studentRepsonse);
     }
 
     public void deleteStudent(Long id) {

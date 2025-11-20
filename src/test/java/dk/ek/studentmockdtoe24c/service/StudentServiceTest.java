@@ -125,21 +125,49 @@ class StudentServiceTest {
     @Test
     void updateStudent() {
         s1.setId(1L);
-        Student request = new Student("Johnny Updated", "NewPass123", LocalDate.of(2001, 1, 1), LocalTime.of(12, 0));
 
+        StudentRequestDTO requestDTO = new StudentRequestDTO(
+                "Johnny Updated",
+                "NewPass123",
+                LocalDate.of(2001, 1, 1),
+                LocalTime.of(12, 0)
+        );
+
+        // mock mapper to convert requestDTO to Student
+        Student updatedInfo = new Student(
+                requestDTO.name(),
+                requestDTO.password(),
+                s1.getBornDate(),
+                s1.getBornTime()
+        );
+        when(studentMapper.toStudent(requestDTO)).thenReturn(updatedInfo);
+
+        //mock repository ops
         when(studentRepository.findById(1L)).thenReturn(Optional.of(s1));
-        // return whats passed in to save
         when(studentRepository.save(s1)).thenReturn(s1);
 
-        Student result = studentService.updateStudent(1L, request);
+        //mock mapper to convert saved Student to requestDTO
+        StudentRequestDTO responseDTO = new StudentRequestDTO(
+                s1.getName(),
+                s1.getPassword(),
+                s1.getBornDate(),
+                s1.getBornTime()
+        );
+        when(studentMapper.toStudentRequestDTO(s1)).thenReturn(responseDTO);
+
+        //act
+        StudentRequestDTO result = studentService.updateStudent(1L, requestDTO);
+
+        //assert
         assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Johnny Updated", result.getName());
-        assertEquals("NewPass123", result.getPassword());
-        assertEquals(request.getBornDate(), result.getBornDate());
-        assertEquals(request.getBornTime(), result.getBornTime());
+        assertEquals("Johnny Updated", result.name());
+        assertEquals("NewPass123", result.password());
+
+        //verify
         verify(studentRepository).findById(1L);
         verify(studentRepository).save(s1);
+        verify(studentMapper).toStudent(requestDTO);
+        verify(studentMapper).toStudentRequestDTO(s1);
     }
 
     @Test

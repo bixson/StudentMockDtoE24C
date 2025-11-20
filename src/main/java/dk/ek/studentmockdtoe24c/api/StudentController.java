@@ -45,23 +45,22 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student studentRequest) {
+    public ResponseEntity<StudentRequestDTO> updateStudent(@PathVariable Long id, @RequestBody StudentRequestDTO studentRequest) {
         try {
-            Student updatedStudent = studentService.updateStudent(id, studentRequest);
+            StudentRequestDTO updatedStudent = studentService.updateStudent(id, studentRequest);
             return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
-        try {
-            studentService.deleteStudent(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
 }
+
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+//        try {
+//            studentService.deleteStudent(id);
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        } catch (RuntimeException e) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
