@@ -1,5 +1,6 @@
 package dk.ek.studentmockdtoe24c.service;
 
+import dk.ek.studentmockdtoe24c.dto.StudentRequestDTO;
 import dk.ek.studentmockdtoe24c.dto.StudentResponseDTO;
 import dk.ek.studentmockdtoe24c.model.Student;
 import dk.ek.studentmockdtoe24c.repository.StudentRepository;
@@ -82,20 +83,43 @@ class StudentServiceTest {
 
     @Test
     void createStudent() {
+        // Arrange - create a StudentRequestDTO
+        StudentRequestDTO requestDTO = new StudentRequestDTO(
+                s1.getName(),
+                s1.getPassword(),
+                s1.getBornDate(),
+                s1.getBornTime()
+        );
+
         Student toSave = s1;
         Student saved = new Student(s1.getName(), s1.getPassword(), s1.getBornDate(), s1.getBornTime());
         saved.setId(1L);
 
+        // Mock mapper: RequestDTO -> Student
+        when(studentMapper.toStudent(requestDTO)).thenReturn(toSave);
+        // Mock repository save
         when(studentRepository.save(toSave)).thenReturn(saved);
+        // Mock mapper: Student -> RequestDTO (current implementation returns RequestDTO)
+        StudentRequestDTO responseDTO = new StudentRequestDTO(
+                saved.getName(),
+                saved.getPassword(),
+                saved.getBornDate(),
+                saved.getBornTime()
+        );
+        when(studentMapper.toStudentRequestDTO(saved)).thenReturn(responseDTO);
 
         //act
-        Student result = studentService.createStudent(toSave);
+        StudentRequestDTO result = studentService.createStudent(requestDTO);
+
         //assert
         assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Johnny Doesit", result.getName());
+        assertEquals("Johnny Doesit", result.name());
+        assertEquals("Johnnyboy69", result.password());
+
         //verify
+        verify(studentMapper).toStudent(requestDTO);
         verify(studentRepository).save(toSave);
+        verify(studentMapper).toStudentRequestDTO(saved);
     }
 
     @Test

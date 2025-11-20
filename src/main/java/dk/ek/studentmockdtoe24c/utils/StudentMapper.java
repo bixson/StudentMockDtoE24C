@@ -26,4 +26,13 @@ public class StudentMapper {
         );
     }
 
+    public StudentRequestDTO toStudentRequestDTO(Student student) {
+        return new StudentRequestDTO(
+                student.getName(),
+                student.getPassword(),
+                student.getBornDate(),
+                student.getBornTime()
+        );
+    }
+
 }

@@ -1,5 +1,6 @@
 package dk.ek.studentmockdtoe24c.api;
 
+import dk.ek.studentmockdtoe24c.dto.StudentRequestDTO;
 import dk.ek.studentmockdtoe24c.dto.StudentResponseDTO;
 import dk.ek.studentmockdtoe24c.model.Student;
 import dk.ek.studentmockdtoe24c.service.StudentService;
@@ -38,8 +39,8 @@ public class StudentController {
 
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(@RequestBody Student studentRequest) {
-        Student newStudent = studentService.createStudent(studentRequest);
+    public ResponseEntity<StudentRequestDTO> createStudent(@RequestBody StudentRequestDTO studentRequest) {
+        StudentRequestDTO newStudent = studentService.createStudent(studentRequest);
         return new ResponseEntity<>(newStudent, HttpStatus.CREATED);
     }
 

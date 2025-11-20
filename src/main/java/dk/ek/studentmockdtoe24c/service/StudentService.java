@@ -1,5 +1,6 @@
 package dk.ek.studentmockdtoe24c.service;
 
+import dk.ek.studentmockdtoe24c.dto.StudentRequestDTO;
 import dk.ek.studentmockdtoe24c.dto.StudentResponseDTO;
 import dk.ek.studentmockdtoe24c.model.Student;
 import dk.ek.studentmockdtoe24c.repository.StudentRepository;
@@ -38,24 +39,10 @@ public class StudentService {
             .orElseThrow(() -> new RuntimeException("Student not found with id " + id));
     }
 
-//    public Student getStudentById(Long id) {
-//
-//        Optional<Student> optionalStudent = studentRepository.findById(id);
-//
-//        // Throw RuntimeException if student is not found
-//        if (optionalStudent.isEmpty()) {
-//            throw new RuntimeException("Student not found with id " + id);
-//        }
-//
-//        Student studentResponse = optionalStudent.get();
-//
-//        return studentResponse;
-//    }
-
-    public Student createStudent(Student studentRequest) {
-        Student studentResponse = studentRepository.save(studentRequest);
-
-        return studentResponse;
+    public StudentRequestDTO createStudent(StudentRequestDTO studentRequest) {
+        Student student = StudentMapper.toStudent(studentRequest);
+        Student savedStudent = studentRepository.save(student);
+        return StudentMapper.toStudentRequestDTO(savedStudent);
     }
 
     public Student updateStudent(Long id, Student studentRequest) {
